@@ -31,46 +31,30 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-@TeleOp(name="RevHub_18_19", group="Pushbot")
-public class RevHubTest_18_19 extends OpMode {
-    private EngineMod_7696 engine = new EngineMod_7696();
-    private ArmMod_7696 army = new ArmMod_7696();
+import org.firstinspires.ftc.teamcode.Modules.TensorFlowModule;
+
+@TeleOp(name="RevHub 01", group="Pushbot")
+public class VexTest extends OpMode {
+    //private EngineMod_7696 engine = new EngineMod_7696();
 
     private double maxSpeed = 1.0d;
     private double moveSpeed = 1.0d;
 
-
-    DcMotor carriage = null;
-    DcMotor collector = null;
-
-
-    boolean collect = false;
-    boolean out = false;
     private double maxMotorPower = 1.0d;
 
-    boolean pressed = false;
-    int stage = 0;
+    private TensorFlowModule tensorFlowModule = new TensorFlowModule();
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
-        engine.Initialize(hardwareMap);
-        army.init(hardwareMap);
-
-        collector = hardwareMap.dcMotor.get("collector");
-        collector.setDirection(DcMotor.Direction.FORWARD);
-        collector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        collector.setPower(0.0d);
-
-        carriage = hardwareMap.dcMotor.get("carriage");
-        carriage.setDirection(DcMotor.Direction.FORWARD);
-        carriage.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        carriage.setPower(0.0d);
+        /*engine.Initialize(hardwareMap);
 
         // Tell the driver that initialization is complete.
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Status", "Initialized");*/
+
+        tensorFlowModule.init(this);
     }
 
     /*
@@ -85,7 +69,7 @@ public class RevHubTest_18_19 extends OpMode {
      */
     @Override
     public void start() {
-
+        tensorFlowModule.start();
     }
 
     /*
@@ -93,9 +77,8 @@ public class RevHubTest_18_19 extends OpMode {
      */
     @Override
     public void loop() {
-        army.loop(this);
         //Drive engines
-        double left = clamp(gamepad1.left_stick_y);
+        /*double left = clamp(gamepad1.left_stick_y);
         double right = clamp(gamepad1.right_stick_y);
 
         if (gamepad1.left_bumper) {
@@ -111,76 +94,25 @@ public class RevHubTest_18_19 extends OpMode {
         else {
             engine.Move(GetInputs(gamepad1), 1.0d);
         }
-        //other motors
-
-        if (gamepad2.b) {
-            out = true;
-            collect = false;
-            //  collector.setPower(0.75d);
-        }
-        else if (gamepad2.a) {
-            collect = true;
-            out = false;
-            // collector.setPower(-1.0d);
-        }
-        else {
-            collector.setPower(0.0d);
-        }
-        if(gamepad2.right_bumper){
-            collect = false;
-            out = false;
-            collector.setPower(0.0d);
-        }
-
-        if(collect){
-            collector.setPower(-1.0d);
-        }
-        else if (out){
-            collector.setPower(0.475d);
-        }
-
-       /*
-*/
-        if (gamepad2.dpad_up) {
-            carriage.setPower(-1.0d);
-        }
-        else if (gamepad2.dpad_down) {
-            carriage.setPower(1.0d);
-        }
-        else {
-            carriage.setPower(0.0d);
-        }
-
-        if(gamepad1.a && !pressed) {
-            pressed = true;
-        }
 
 
-        //else if(gamepad1.b){
-         //   arm.setPower(0.0d);
-         //   lift.setPower(0.0d);
-       // }
-       // else{
-      //      arm.setTargetPosition(arm.getCurrentPosition());
-      //      lift.setTargetPosition(lift.getCurrentPosition());
-       // }
 
         //telemetry
-
 
         telemetry.addData("Left Stick: ", gamepad1.left_stick_y);
         telemetry.addData("Right Stick: ", gamepad1.right_stick_y);
         //   telemetry.addData("Left Power: ", left);
         //  telemetry.addData("Right Power: ", right);
         //  telemetry.addData("Max Speed: ", maxSpeed);
-        telemetry.addData("Arm: ", army.arm.getCurrentPosition());
-        telemetry.addData("Lift: ", army.lift.getCurrentPosition());
+
         //    telemetry.addData("LeftB: ", engine.GetMotor(EngineMod_7696.EngineMotor.BackLeft).getCurrentPosition());
         //   telemetry.addData("LeftF: ", engine.GetMotor(EngineMod_7696.EngineMotor.FrontLeft).getCurrentPosition());
         //  telemetry.addData("RightB: ", engine.GetMotor(EngineMod_7696.EngineMotor.BackRight).getCurrentPosition());
         //  telemetry.addData("RightF: ", engine.GetMotor(EngineMod_7696.EngineMotor.FrontRight).getCurrentPosition());
 
-        telemetry.update();
+        telemetry.update();*/
+
+        tensorFlowModule.loop(this);
     }
 
     /*
@@ -188,12 +120,9 @@ public class RevHubTest_18_19 extends OpMode {
      */
     @Override
     public void stop() {
-        engine.Stop();
+        //engine.Stop();
 
-     //   arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        carriage.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-     //   lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+        tensorFlowModule.stop();
     }
 
     public SampleOp_States.Dpad GetInputs(Gamepad gamepad) {

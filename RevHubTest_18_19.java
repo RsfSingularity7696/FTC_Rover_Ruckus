@@ -31,10 +31,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.teamcode.Modules.ArmModule;
+import org.firstinspires.ftc.teamcode.Modules.EngineModule;
+
 @TeleOp(name="RevHub_18_19", group="Pushbot")
 public class RevHubTest_18_19 extends OpMode {
-    private EngineMod_7696 engine = new EngineMod_7696();
-    private ArmMod_7696 army = new ArmMod_7696();
+    private EngineModule engine = new EngineModule();
+    private ArmModule army = new ArmModule();
 
     private double maxSpeed = 1.0d;
     private double moveSpeed = 1.0d;

@@ -30,14 +30,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Modules.ArmModule;
 import org.firstinspires.ftc.teamcode.Modules.EngineModule;
-import org.firstinspires.ftc.teamcode.Modules.TensorFlowModule;
 
-@TeleOp(name="RevHub_18_19", group="Pushbot")
-public class RevHubTest_18_19 extends OpMode {
+@TeleOp(name="Expulsion 100", group="Pushbot")
+public class RevHubTestExpulsion100 extends OpMode {
     private EngineModule engine = new EngineModule();
     private ArmModule army = new ArmModule();
 
@@ -48,12 +46,6 @@ public class RevHubTest_18_19 extends OpMode {
     DcMotor carriage = null;
     DcMotor collector = null;
 
-    Servo leftDump = null;
-    Servo rightDump = null;
-
-    boolean dumpRight = false;
-    boolean dumpLeft = false;
-
     double timestamp = 0.0d;
     boolean power = false;
     boolean collect = false;
@@ -62,10 +54,6 @@ public class RevHubTest_18_19 extends OpMode {
 
     boolean pressed = false;
     int stage = 0;
-
-    double dumpWait = 0.5d;
-    double leftDumpWait = 0.0d;
-    double rightDumpWait = 0.0d;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -85,16 +73,8 @@ public class RevHubTest_18_19 extends OpMode {
         carriage.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         carriage.setPower(0.0d);
 
-        rightDump = hardwareMap.servo.get("rightDump");
-        leftDump = hardwareMap.servo.get("leftDump");
-        rightDump.setDirection(Servo.Direction.REVERSE);
-        leftDump.setDirection(Servo.Direction.FORWARD);
-        rightDump.setPosition(0.0d);
-        leftDump.setPosition(0.0d);
-
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
-
     }
 
     /*
@@ -109,9 +89,6 @@ public class RevHubTest_18_19 extends OpMode {
      */
     @Override
     public void start() {
-        engine.SetMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
 
     }
 
@@ -120,18 +97,18 @@ public class RevHubTest_18_19 extends OpMode {
      */
     @Override
     public void loop() {
-        // army.loop(this);
+       // army.loop(this);
 
         //Drive engines
         double left = clamp(gamepad1.left_stick_y);
         double right = clamp(gamepad1.right_stick_y);
 
-        if (gamepad1.left_bumper) {
+        if(gamepad1.left_bumper){
             if (army.arm.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
                 army.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
             //army.lift.setTargetPosition(4893);
-            army.arm.setTargetPosition(1780);
+            army.arm.setTargetPosition(1705);
         }
         if (gamepad1.a) {
             if (army.arm.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
@@ -148,7 +125,7 @@ public class RevHubTest_18_19 extends OpMode {
 
             //army.lift.setPower(1.0d);
             //army.lift.setTargetPosition(4893);
-            army.arm.setTargetPosition(2120);
+            army.arm.setTargetPosition(2178);
         } else if (gamepad1.b) {
             if (army.arm.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
                 army.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -159,34 +136,8 @@ public class RevHubTest_18_19 extends OpMode {
 
             //army.lift.setTargetPosition(50);
             //army.lift.setPower(-1.0d);
-            army.arm.setTargetPosition(0);
+            army.arm.setTargetPosition(50);
             army.arm.setPower(-0.3d);
-        } else if (gamepad1.y) {
-            if (army.arm.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-                army.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
-            army.arm.setTargetPosition(1279);
-            army.arm.setPower(0.35d);
-            /*if(army.arm.getCurrentPosition() > 1279){
-                army.arm.setPower(-0.3d);
-            }
-            else if(army.arm.getCurrentPosition() < 1279){
-                army.arm.setPower(0.35d);
-            }*/
-
-        }
-
-        if (gamepad1.right_trigger >= 0.3d) {
-            army.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            army.arm.setPower(-gamepad1.right_trigger);
-        } else if (gamepad1.left_trigger >= 0.3d) {
-            army.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            army.arm.setPower(gamepad1.left_trigger);
-        } else {
-            army.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            army.arm.setPower(0.5d);
-            //army.arm.setTargetPosition(army.arm.getCurrentPosition());
         }
 
         if (gamepad2.y) {
@@ -195,13 +146,15 @@ public class RevHubTest_18_19 extends OpMode {
             }
 
             army.lift.setPower(1.0d);
-        } else if (gamepad2.x) {
+        }
+        else if (gamepad2.x) {
             if (army.lift.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
                 army.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
             army.lift.setPower(-1.0d);
-        } else {
+        }
+        else {
             if (army.lift.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
                 army.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
@@ -210,21 +163,15 @@ public class RevHubTest_18_19 extends OpMode {
         }
 
         if (gamepad1.left_bumper) {
-           // engine.SetMaxMotorPower(1.0d);
-            army.lift.setPower(0.4d);
+            engine.SetMaxMotorPower(1.0d);
         } else if (gamepad1.right_bumper) {
-           // engine.SetMaxMotorPower(0.50d);
-            army.lift.setPower(-0.4d);
+            engine.SetMaxMotorPower(0.50d);
         }
 
         if (!gamepad1.dpad_down && !gamepad1.dpad_left && !gamepad1.dpad_right && !gamepad1.dpad_up) {
             engine.SetSpeed(left, left, right, right);
         } else {
             engine.Move(GetInputs(gamepad1), 1.0d);
-        }
-
-        if (gamepad1.x) {
-            army.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
         //other motors
 
@@ -242,30 +189,7 @@ public class RevHubTest_18_19 extends OpMode {
             //  collector.setPower(0.0d);
             //    power = false;
         }
-        if (gamepad2.left_bumper) {
-            if (!dumpRight && wait(rightDumpWait, dumpWait)) {
-                rightDump.setPosition(1.0d);
-                dumpRight = true;
-                rightDumpWait = time;
-            } else if (dumpRight && wait(rightDumpWait, dumpWait)) {
-                rightDump.setPosition(0.0d);
-                dumpRight = false;
-                rightDumpWait = time;
-            }
-
-        } else if (gamepad2.right_bumper) {
-            if (!dumpLeft && wait(leftDumpWait, dumpWait)) {
-                leftDump.setPosition(1.0d);
-                dumpLeft = true;
-                leftDumpWait = time;
-            } else if (dumpLeft && wait(leftDumpWait, dumpWait)) {
-                leftDump.setPosition(0.0d);
-                dumpLeft = false;
-                leftDumpWait = time;
-            }
-        }
-
-        if (gamepad2.right_trigger >= 0.1d) {
+        if (gamepad2.right_bumper) {
             collect = false;
             out = false;
             collector.setPower(0.0d);
@@ -280,25 +204,24 @@ public class RevHubTest_18_19 extends OpMode {
                 collector.setPower(0.42d);
             }*/
 
-          /*  if (time > timestamp + 0.20d) {
+            if (time > timestamp + 0.20d) {
                 power = !power;
                 timestamp = time;
             }
 
             if (power) {
-                collector.setPower(0.7d);
+                collector.setPower(1.0d);
             } else {
                 collector.setPower(0.0d);
             }
-            */
-            collector.setPower(-0.6d);
+
             // collector.setPower(0.42d);
         }
 
-        if (gamepad2.dpad_down) {
-            carriage.setPower(1.0d);
-        } else if (gamepad2.dpad_up) {
+        if (gamepad2.dpad_up) {
             carriage.setPower(-1.0d);
+        } else if (gamepad2.dpad_down) {
+            carriage.setPower(1.0d);
         } else {
             carriage.setPower(0.0d);
         }
@@ -306,6 +229,7 @@ public class RevHubTest_18_19 extends OpMode {
         if (gamepad1.a && !pressed) {
             pressed = true;
         }
+
 
         //else if(gamepad1.b){
         //   arm.setPower(0.0d);
@@ -318,25 +242,18 @@ public class RevHubTest_18_19 extends OpMode {
 
         //telemetry
 
-        //      telemetry.addData("Time: ", time);
-        //      telemetry.addData("Left Stick: ", gamepad1.left_stick_y);
-        //      telemetry.addData("Right Stick: ", gamepad1.right_stick_y);
+        telemetry.addData("Time: ", time);
+        telemetry.addData("Left Stick: ", gamepad1.left_stick_y);
+        telemetry.addData("Right Stick: ", gamepad1.right_stick_y);
         //   telemetry.addData("Left Power: ", left);
         //  telemetry.addData("Right Power: ", right);
         //  telemetry.addData("Max Speed: ", maxSpeed);
-        //     telemetry.addData("Arm: ", army.arm.getCurrentPosition());
-        //     telemetry.addData("Lift: ", army.lift.getCurrentPosition());
-
-        telemetry.addData("Time: ", time);
-
         telemetry.addData("Arm: ", army.arm.getCurrentPosition());
-        telemetry.addData("LeftB: ", engine.GetMotor(EngineModule.EngineMotor.BackLeft).getCurrentPosition());
-        telemetry.addData("LeftF: ", engine.GetMotor(EngineModule.EngineMotor.FrontLeft).getCurrentPosition());
-        telemetry.addData("RightB: ", engine.GetMotor(EngineModule.EngineMotor.BackRight).getCurrentPosition());
-        telemetry.addData("RightF: ", engine.GetMotor(EngineModule.EngineMotor.FrontRight).getCurrentPosition());
-
-        telemetry.addData("Left Wait: ", leftDumpWait);
-        telemetry.addData("Right Wait: ", rightDumpWait);
+        telemetry.addData("Lift: ", army.lift.getCurrentPosition());
+        //    telemetry.addData("LeftB: ", engine.GetMotor(EngineMod_7696.EngineMotor.BackLeft).getCurrentPosition());
+        //   telemetry.addData("LeftF: ", engine.GetMotor(EngineMod_7696.EngineMotor.FrontLeft).getCurrentPosition());
+        //  telemetry.addData("RightB: ", engine.GetMotor(EngineMod_7696.EngineMotor.BackRight).getCurrentPosition());
+        //  telemetry.addData("RightF: ", engine.GetMotor(EngineMod_7696.EngineMotor.FrontRight).getCurrentPosition());
 
         telemetry.update();
     }
@@ -397,9 +314,5 @@ public class RevHubTest_18_19 extends OpMode {
         else {
             return value;
         }
-    }
-
-    private boolean wait(double timestamp, double wait) {
-        return time > timestamp + wait;
     }
 }

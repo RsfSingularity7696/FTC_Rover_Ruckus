@@ -10,8 +10,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  */
 
 public class ArmModule {
-  public  DcMotor arm = null;
-  public  DcMotor lift = null;
+    public DcMotor arm = null;
+    public DcMotor lift = null;
 
     boolean pressed = false;
     int stage = 0;
@@ -21,45 +21,43 @@ public class ArmModule {
     int lift1 = 0;
     int lift2 = 150;
 
-    public void init(HardwareMap hardwareMap ){
+    public void init(HardwareMap hardwareMap) {
         arm = hardwareMap.dcMotor.get("arm");
-        arm.setDirection(DcMotor.Direction.FORWARD);
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        arm.setPower(0.0d);
+        arm.setDirection(DcMotor.Direction.REVERSE);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setPower(1.0d);
+        arm.setTargetPosition(arm.getCurrentPosition());
 
         lift = hardwareMap.dcMotor.get("lift");
         lift.setDirection(DcMotor.Direction.FORWARD);
-        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lift.setPower(0.0d);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+      //  lift.setPower(1.0d);
+        lift.setTargetPosition(lift.getCurrentPosition());
     }
 
     public void loop(OpMode opMode) {
 
         if (opMode.gamepad2.y) {
             lift.setPower(1.0d);
-        }
-        else if (opMode.gamepad2.x) {
+        } else if (opMode.gamepad2.x) {
             lift.setPower(-1.0d);
-        }
-        else {
+        } else {
             lift.setPower(0.0d);
         }
 
-        if (opMode.gamepad2.right_trigger >= 0.3d) {
+      /*  if (opMode.gamepad2.right_trigger >= 0.3d) {
             arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             arm.setPower(-opMode.gamepad2.right_trigger);
-        }
-        else if (opMode.gamepad2.left_trigger >= 0.3d) {
+        } else if (opMode.gamepad2.left_trigger >= 0.3d) {
             arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             arm.setPower(opMode.gamepad2.left_trigger);
-        }
-        else {
+        } else {
             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             arm.setPower(0.5d);
             arm.setTargetPosition(arm.getCurrentPosition());
         }
-
-        if (opMode.gamepad1.a && !pressed) {
+        */
+       /* if (opMode.gamepad1.a && !pressed) {
             pressed = true;
         }
         if (pressed) {
@@ -100,7 +98,13 @@ public class ArmModule {
 
 
         }
+        */
         opMode.telemetry.addData("arm", arm.getCurrentPosition());
         opMode.telemetry.addData("lift", lift.getCurrentPosition());
+    }
+
+    public void stop() {
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }

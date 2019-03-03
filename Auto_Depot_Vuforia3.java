@@ -29,12 +29,14 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Modules.ArmModule;
 import org.firstinspires.ftc.teamcode.Modules.EngineModule;
+import org.firstinspires.ftc.teamcode.Modules.GyroModule;
 import org.firstinspires.ftc.teamcode.Modules.TensorFlowModule;
 
 /**
@@ -50,7 +52,7 @@ import org.firstinspires.ftc.teamcode.Modules.TensorFlowModule;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-
+@Disabled
 @TeleOp(name="Auto_Depot_Vuforia_Deploy", group="Iterative Opmode")
 
 public class Auto_Depot_Vuforia3 extends OpMode
@@ -71,6 +73,7 @@ public class Auto_Depot_Vuforia3 extends OpMode
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
+
 
         army.init(hardwareMap);
         engine.Initialize(hardwareMap);
@@ -98,8 +101,10 @@ public class Auto_Depot_Vuforia3 extends OpMode
     public void start() {
         engine.SetMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+
         army.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         army.arm.setPower(0.0d);
+
 
         detector.start();
 
@@ -113,6 +118,7 @@ public class Auto_Depot_Vuforia3 extends OpMode
      */
     @Override
     public void loop() {
+
         switch (stage) {
             case -5:
                 if (sample == "" && wait(4.0d) > time) {
@@ -184,10 +190,10 @@ public class Auto_Depot_Vuforia3 extends OpMode
                 else{
                     stopMotors();
                     army.lift.setPower(0.0d);
-                    next(-13);
+                    next(1);
                 }
                 break;
-            case -13:
+         /*   case -13:
                 if (sample == "" && wait(4.0d) > time) {
                     sample = detector.loop(this);
                 }
@@ -196,6 +202,7 @@ public class Auto_Depot_Vuforia3 extends OpMode
                     next(1);
                 }
                 break;
+               */
             case 1:
                 if(sample.equals("Left")){
                     next(2);

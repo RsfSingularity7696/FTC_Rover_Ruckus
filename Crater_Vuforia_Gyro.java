@@ -1,4 +1,4 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
+package org.firstinspires.ftc.teamcode;/* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -27,8 +27,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -39,6 +37,7 @@ import org.firstinspires.ftc.teamcode.Modules.EngineModule;
 import org.firstinspires.ftc.teamcode.Modules.GyroModule;
 import org.firstinspires.ftc.teamcode.Modules.GyroOrientation;
 import org.firstinspires.ftc.teamcode.Modules.TensorFlowModule;
+import org.firstinspires.ftc.teamcode.SampleOp_States;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -53,16 +52,16 @@ import org.firstinspires.ftc.teamcode.Modules.TensorFlowModule;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Disabled
-@TeleOp(name="Auto_Crater_Vuforia_Deploy", group="Iterative Opmode")
 
-public class Auto_Crater_Vuforia3 extends OpMode
+@TeleOp(name="Crater_Vuforia_Gyro", group="Iterative Opmode")
+
+public class Crater_Vuforia_Gyro extends OpMode
 {
     ArmModule army = new ArmModule();
     EngineModule engine = new EngineModule();
     GyroModule gyro = new GyroModule();
 
-    int stage = 0;
+    int stage = -4;
 
     private String sample = "";
     private double timestamp = 0.0d;
@@ -116,8 +115,8 @@ public class Auto_Crater_Vuforia3 extends OpMode
     public void loop() {
         GyroOrientation gyroOrientation = gyro.loop();
         if(gyroOrientation.axis.x > 15 || gyroOrientation.axis.x < -15){
-            stopMotors();
-            army.lift.setPower(0.0d);
+           // stopMotors();
+           // army.lift.setPower(0.0d);
         }
         switch (stage) {
             case -5:
@@ -175,7 +174,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 }
                 break;
             case -1:
-                if(wait(0.6d) > time){
+                if(wait(0.44d) > time){
                     engine.SetSpeed(0.3d);
                 }
                 else{
@@ -185,7 +184,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 }
                 break;
             case 0:
-                if(wait(0.4d) > time){
+                if(wait(0.29d) > time){
                     engine.SetSpeed(-0.3d, -0.3d);
                 }
                 else{
@@ -215,8 +214,8 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 }
                 break;
             case 2:
-                if (wait(1.10d) > time) {
-                    engine.SetSpeed(0.3d, -0.3d);
+                if (wait(0.88) > time) {
+                    engine.SetSpeed(0.3d, -0.37d);
                     army.arm.setPower(0.0d);
                 }
                 else {
@@ -225,8 +224,8 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 }
                 break;
             case 3:
-                if (wait(1.10d) > time) {
-                    engine.SetSpeed(-0.3d, 0.3d);
+                if (wait(0.94) > time) {
+                    engine.SetSpeed(-0.4d, 0.3d);
                     army.arm.setPower(0.0d);
                 }
                 else {
@@ -235,7 +234,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 }
                 break;
             case 4:
-                if (wait(1.8d) > time){
+                if (wait(1.3d) > time){
                     engine.SetSpeed(-0.6d, -0.6d);
                     army.arm.setPower(0.0d);
                 }
@@ -245,7 +244,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 }
                 break;
             case 5:
-                if(wait(1.0d) > time){
+                if(wait(0.727d) > time){
                     engine.SetSpeed(0.5d, 0.5d);
                 }
                 else{
@@ -266,7 +265,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 break;
             //Left turn left
             case 7:
-                if(wait(1.5d) > time){
+                if(wait(1.3d) > time){
                     engine.SetSpeed(0.4d, -0.4d);
                 }
                 else{
@@ -276,7 +275,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 break;
             //Right turn left
             case 8:
-                if(wait(3.10d) > time){
+                if(wait(2.20d) > time){
                     engine.SetSpeed(0.4d, -0.4d);
                 }
                 else{
@@ -286,7 +285,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 break;
             //Center turn left
             case 9:
-                if(wait(2.2d) > time){
+                if(wait(1.59d) > time){
                     engine.SetSpeed(0.4d, -0.4d);
                 }
                 else{
@@ -296,7 +295,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 break;
             //Left move forward into mecanum
             case 10:
-                if(wait(2.6d) > time){
+                if(wait(1.89d) > time){
                     engine.SetSpeed(-0.5d, -0.5d);
                 }
                 else{
@@ -306,7 +305,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 break;
             //Right move forward into mecanum
             case 11:
-                if (wait(2.64d) > time){
+                if (wait(1.5d) > time){
                     engine.SetSpeed(-1.0d, -1.0d);
                 }
                 else{
@@ -316,7 +315,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 break;
             //Center move forward into mecanum
             case 12:
-                if(wait(2.9d) > time){
+                if(wait(2.1d) > time){
                     engine.SetSpeed(-0.5d, -0.5d);
                 }
                 else{
@@ -326,7 +325,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 break;
             //adds turn for left sample turn
             case -10:
-                if(wait(1.2d) > time){
+                if(wait(0.8724d) > time){
                     engine.SetSpeed(0.3d, -0.3d);
                 }
                 else{
@@ -344,8 +343,8 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 break;
             //Left Mecanum
             case 13:
-                if(wait(4.2d) > time){
-                    engine.Move(SampleOp_States.Dpad.Right, 0.3d);
+                if(wait(3.05d) > time){
+                    engine.Move(SampleOp_States.Dpad.Right, 1.0d);
                 }
                 else{
                     stopMotors();
@@ -354,7 +353,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 break;
             //Right mecanum
             case 14:
-                if(wait(4.2d) > time){
+                if(wait(4.0d) > time){
                     engine.Move(SampleOp_States.Dpad.Right, 1.0d);
                 }
                 else{
@@ -364,8 +363,8 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 break;
             //Center Mecanum to wall
             case 15:
-                if(wait(4.2d) > time){
-                    engine.Move(SampleOp_States.Dpad.Right, 0.3d);
+                if(wait(3.05d) > time){
+                    engine.Move(SampleOp_States.Dpad.Right, 1.0d);
                 }
                 else{
                     stopMotors();
@@ -374,7 +373,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 break;
             //Left move into depot
             case 16:
-                if(wait(2.5d) > time){
+                if(wait(1.9d) > time){
                     engine.SetSpeed(-0.7d, -0.7d);
                 }
                 else{
@@ -384,7 +383,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 break;
             //Right move into depot
             case 17:
-                if(wait( 2.7d) > time){
+                if(wait( 1.6d) > time){
                     engine.SetSpeed(-0.7d, -0.7d);
                 }
                 else{
@@ -394,7 +393,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 break;
             //Center move into depot
             case 18:
-                if(wait(2.7d) > time){
+                if(wait(1.9629d) > time){
                     engine.SetSpeed(-0.7d, -0.7d);
                 }
                 else{
@@ -420,7 +419,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 }
                 break;
             case -11:
-                if(wait(3.0d) > time){
+                if(wait(2.181d) > time){
                     army.arm.setTargetPosition(500);
                     army.arm.setPower(0.53d);
                     //    rev.carriage.setPower(-0.8d);
@@ -438,7 +437,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                     army.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 }
 
-                if (wait(1.57d) > time){
+                if (wait(1.8d) > time){
                     army.arm.setPower(0.8d);
                     army.lift.setPower(-1.0d);
 
@@ -450,7 +449,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 }
                 break;
             case -12:
-                if(wait(3.0d) > time){
+                if(wait(2.181d) > time){
                     army.arm.setTargetPosition(500);
                     army.arm.setPower(0.53d);
                     //    rev.carriage.setPower(-0.8d);
@@ -494,7 +493,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 break;
             //Left backwards move
             case 22:
-                if(wait(3.2d) > time){
+                if(wait(2.364d) > time){
                     engine.SetSpeed(0.7d, 0.7d);
                 }
                 else{
@@ -503,7 +502,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 }
                 break;
             case 23:
-                if(wait(3.2d) > time){
+                if(wait(2.364d) > time){
                     engine.SetSpeed(0.7d, 0.7d);
                 }
                 else{
@@ -513,7 +512,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 break;
             //Center backwards move
             case 24:
-                if(wait(3.2d) > time){
+                if(wait(2.364d) > time){
                     engine.SetSpeed(0.7d, 0.7d);
                 }
                 else{

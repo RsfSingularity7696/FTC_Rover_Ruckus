@@ -26,6 +26,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -35,12 +36,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Modules.ArmModule;
 import org.firstinspires.ftc.teamcode.Modules.EngineModule;
 import org.firstinspires.ftc.teamcode.Modules.TensorFlowModule;
-
-@TeleOp(name="RevHub_18_19", group="Pushbot")
-public class RevHubTest_18_19 extends OpMode {
+@Disabled
+@TeleOp(name="RevHub_19", group="Pushbot")
+public class RevHubTest_19 extends OpMode {
     private EngineModule engine = new EngineModule();
     private ArmModule army = new ArmModule();
-    DigitalTouch touch = new DigitalTouch();
 
     private double maxSpeed = 1.0d;
     private double moveSpeed = 1.0d;
@@ -75,7 +75,6 @@ public class RevHubTest_18_19 extends OpMode {
     public void init() {
         engine.Initialize(hardwareMap);
         army.init(hardwareMap);
-        touch.init(this);
 
         collector = hardwareMap.dcMotor.get("collector");
         collector.setDirection(DcMotor.Direction.FORWARD);
@@ -120,18 +119,10 @@ public class RevHubTest_18_19 extends OpMode {
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
+
     @Override
     public void loop() {
-         army.loop(this);
-      // boolean isPressed = touch.loop();
-
-
-//        if (isPressed) {
-      //      army.arm.setPower(0.0d);
-       // }
-  //      else {
-        //    army.arm.setPower(0.15d);
-    //    }
+        // army.loop(this);
 
         //Drive engines
         double left = clamp(gamepad1.left_stick_y);
@@ -144,44 +135,34 @@ public class RevHubTest_18_19 extends OpMode {
             //army.lift.setTargetPosition(4893);
             army.arm.setTargetPosition(1780);
         }
-        if (gamepad1.a || gamepad2.left_trigger > 0.1d) {
+        if (gamepad1.a) {
             if (army.arm.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
                 army.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
+            /*if (army.lift.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+                army.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }*/
             if (army.arm.getCurrentPosition() >= 875) {
                 army.arm.setPower(-0.20);
             } else {
-                army.arm.setPower(0.499d);
+                army.arm.setPower(0.35d);
             }
 
-            army.lift.setPower(1.0d);
-            army.lift.setTargetPosition(4893);
-            army.arm.setTargetPosition(2100);
-        }
-     /*   if (gamepad1.a || gamepad2.left_trigger > 0.1d) {
+            //army.lift.setPower(1.0d);
+            //army.lift.setTargetPosition(4893);
+            army.arm.setTargetPosition(2120);
+        } else if (gamepad1.b) {
             if (army.arm.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
                 army.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-
-            if (!isPressed) {
-                army.arm.setPower(0.15d);
-            } else {
-                army.arm.setPower(0.0d);
-            }
-
-
-        }*/ else if (gamepad1.b) {
-            if (army.arm.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-                army.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            //if (army.lift.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-            //    army.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            //}
+            /*if (army.lift.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+                army.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }*/
 
             //army.lift.setTargetPosition(50);
             //army.lift.setPower(-1.0d);
             army.arm.setTargetPosition(0);
-            army.arm.setPower(-0.4d);
+            army.arm.setPower(-0.3d);
         } else if (gamepad1.y) {
             if (army.arm.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
                 army.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -189,12 +170,12 @@ public class RevHubTest_18_19 extends OpMode {
 
             army.arm.setTargetPosition(1279);
             army.arm.setPower(0.35d);
-            //if(army.arm.getCurrentPosition() > 1279){
-            //    army.arm.setPower(-0.3d);
-            //}
-            //else if(army.arm.getCurrentPosition() < 1279){
-            //    army.arm.setPower(0.35d);
-            //}
+            /*if(army.arm.getCurrentPosition() > 1279){
+                army.arm.setPower(-0.3d);
+            }
+            else if(army.arm.getCurrentPosition() < 1279){
+                army.arm.setPower(0.35d);
+            }*/
 
         }
 
@@ -206,7 +187,7 @@ public class RevHubTest_18_19 extends OpMode {
             army.arm.setPower(gamepad1.left_trigger);
         } else {
             army.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            //army.arm.setPower(0.5d);
+            army.arm.setPower(0.5d);
             //army.arm.setTargetPosition(army.arm.getCurrentPosition());
         }
 
@@ -287,12 +268,30 @@ public class RevHubTest_18_19 extends OpMode {
         }
 
         if (gamepad2.right_trigger >= 0.1d) {
-            army.arm.setTargetPosition(610);
+            collect = false;
+            out = false;
+            collector.setPower(0.0d);
         }
 
         if (collect) {
             collector.setPower(-1.0d);
         } else if (out) {
+            /*if (time % 2 == 0) {
+                collector.setPower(0.0d);
+            } else {
+                collector.setPower(0.42d);
+            }*/
+
+          /*  if (time > timestamp + 0.20d) {
+                power = !power;
+                timestamp = time;
+            }
+            if (power) {
+                collector.setPower(0.7d);
+            } else {
+                collector.setPower(0.0d);
+            }
+            */
             collector.setPower(-0.6d);
             // collector.setPower(0.42d);
         }
@@ -305,30 +304,37 @@ public class RevHubTest_18_19 extends OpMode {
             carriage.setPower(0.0d);
         }
 
-        if (gamepad2.left_stick_y > 0.2d || gamepad2.left_stick_x > 0.2d) {
-            collect = false;
-            out = false;
-            collector.setPower(0.0d);
-        }
-        if (gamepad2.right_stick_y > 0.2d || gamepad2.right_stick_x > 0.2d) {
-            collector.setPower(1.0d);
-            collect = false;
-        }
-
         if (gamepad1.a && !pressed) {
             pressed = true;
         }
 
+        //else if(gamepad1.b){
+        //   arm.setPower(0.0d);
+        //   lift.setPower(0.0d);
+        // }
+        // else{
+        //      arm.setTargetPosition(arm.getCurrentPosition());
+        //      lift.setTargetPosition(lift.getCurrentPosition());
+        // }
+
+        //telemetry
+
+        //      telemetry.addData("Time: ", time);
+        //      telemetry.addData("Left Stick: ", gamepad1.left_stick_y);
+        //      telemetry.addData("Right Stick: ", gamepad1.right_stick_y);
+        //   telemetry.addData("Left Power: ", left);
+        //  telemetry.addData("Right Power: ", right);
+        //  telemetry.addData("Max Speed: ", maxSpeed);
+        //     telemetry.addData("Arm: ", army.arm.getCurrentPosition());
+        //     telemetry.addData("Lift: ", army.lift.getCurrentPosition());
+
         telemetry.addData("Time: ", time);
 
-       // telemetry.addData("Digital Touch: ", isPressed);
         telemetry.addData("Arm: ", army.arm.getCurrentPosition());
-        telemetry.addData("Arm Mode: ", army.arm.getMode());
-        telemetry.addData("Arm Power: ", army.arm.getPower());
-//        telemetry.addData("LeftB: ", engine.GetMotor(EngineModule.EngineMotor.BackLeft).getCurrentPosition());
-//        telemetry.addData("LeftF: ", engine.GetMotor(EngineModule.EngineMotor.FrontLeft).getCurrentPosition());
-//        telemetry.addData("RightB: ", engine.GetMotor(EngineModule.EngineMotor.BackRight).getCurrentPosition());
-//        telemetry.addData("RightF: ", engine.GetMotor(EngineModule.EngineMotor.FrontRight).getCurrentPosition());
+        telemetry.addData("LeftB: ", engine.GetMotor(EngineModule.EngineMotor.BackLeft).getCurrentPosition());
+        telemetry.addData("LeftF: ", engine.GetMotor(EngineModule.EngineMotor.FrontLeft).getCurrentPosition());
+        telemetry.addData("RightB: ", engine.GetMotor(EngineModule.EngineMotor.BackRight).getCurrentPosition());
+        telemetry.addData("RightF: ", engine.GetMotor(EngineModule.EngineMotor.FrontRight).getCurrentPosition());
 
         telemetry.addData("Left Wait: ", leftDumpWait);
         telemetry.addData("Right Wait: ", rightDumpWait);
@@ -343,9 +349,9 @@ public class RevHubTest_18_19 extends OpMode {
     public void stop() {
         engine.Stop();
         army.stop();
-     //   arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //   arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         carriage.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-     //   lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //   lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     }
 

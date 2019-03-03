@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -53,16 +52,17 @@ import org.firstinspires.ftc.teamcode.Modules.TensorFlowModule;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Disabled
-@TeleOp(name="Auto_Crater_Vuforia_Deploy", group="Iterative Opmode")
 
-public class Auto_Crater_Vuforia3 extends OpMode
+@TeleOp(name="Auto_Depot_Vuforia_Gyro", group="Iterative Opmode")
+
+public class Auto_Depot_Vuforia_Gyro extends OpMode
 {
     ArmModule army = new ArmModule();
     EngineModule engine = new EngineModule();
+    RevHubTest_18_19 rev = new RevHubTest_18_19();
     GyroModule gyro = new GyroModule();
 
-    int stage = 0;
+    int stage = 10000000;
 
     private String sample = "";
     private double timestamp = 0.0d;
@@ -80,6 +80,10 @@ public class Auto_Crater_Vuforia3 extends OpMode
         engine.Initialize(hardwareMap);
         detector.init(this);
 
+        rev.carriage = hardwareMap.dcMotor.get("carriage");
+        rev.carriage.setDirection(DcMotor.Direction.FORWARD);
+        rev.carriage.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rev.carriage.setPower(0.0d);
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
     }
@@ -103,7 +107,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
 
         detector.start();
         gyro.start();
-
+        //-4
         stage = -5;
         timestamp = time;
         sample = "";
@@ -116,7 +120,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
     public void loop() {
         GyroOrientation gyroOrientation = gyro.loop();
         if(gyroOrientation.axis.x > 15 || gyroOrientation.axis.x < -15){
-            stopMotors();
+          //  stopMotors();
             army.lift.setPower(0.0d);
         }
         switch (stage) {
@@ -128,7 +132,6 @@ public class Auto_Crater_Vuforia3 extends OpMode
                     next(-4);
                 }
                 break;
-
             case -4:
                 if(wait(0.7d) > time){
                     army.lift.setPower(-1.0d);
@@ -199,10 +202,11 @@ public class Auto_Crater_Vuforia3 extends OpMode
                     sample = detector.loop(this);
                 }
                 else {
+                    stopMotors();
                     next(1);
                 }
                 break;
-                */
+               */
             case 1:
                 if(sample.equals("Left")){
                     next(2);
@@ -221,7 +225,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 }
                 else {
                     stopMotors();
-                    next(4);
+                    next(5);
                 }
                 break;
             case 3:
@@ -231,179 +235,78 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 }
                 else {
                     stopMotors();
-                    next(4);
+                    next(6);
                 }
                 break;
             case 4:
                 if (wait(1.8d) > time){
-                    engine.SetSpeed(-0.6d, -0.6d);
+                    engine.SetSpeed(-0.8d, -0.8d);
                     army.arm.setPower(0.0d);
                 }
                 else{
                     stopMotors();
-                    next(5);
+                    if(sample.equals("Center") || sample.equals("")){
+                        next(-10);
+                    }
+                    else{
+                        next(9);
+                    }
+
                 }
                 break;
-            case 5:
-                if(wait(1.0d) > time){
-                    engine.SetSpeed(0.5d, 0.5d);
+            //Second movement forward
+            case -10:
+                if (wait(2.0d) > time){
+                    engine.SetSpeed(-0.4d, -0.4d);
+                    army.arm.setPower(0.0d);
                 }
                 else{
                     stopMotors();
-                    next(6);
-                }
-                break;
-            case 6:
-                if(sample.equals("Left")){
-                    next(7);
-                }
-                else if (sample.equals("Right")){
-                    next(8);
-                }
-                else {
                     next(9);
                 }
                 break;
-            //Left turn left
+            //Moves robot for Left Sample
+            case 5:
+                if( wait(2.7d) > time){
+                    engine.SetSpeed(-0.45d, -0.45d);
+                }
+                else{
+                    stopMotors();
+                    next(7);
+                }
+                break;
+            //Moves  robot for Right Sample
+            case 6:
+                if(wait(4.0d) > time){
+                    engine.SetSpeed(-0.3d, -0.3d);
+                }
+                else{
+                    stopMotors();
+                    next(8);
+                }
+                break;
+            //Left Sample Turn
             case 7:
-                if(wait(1.5d) > time){
-                    engine.SetSpeed(0.4d, -0.4d);
+                if(wait(1.8) > time){
+                    engine.SetSpeed(-0.3d, 0.3d);
                 }
                 else{
                     stopMotors();
-                    next(10);
+                    next(4);
                 }
                 break;
-            //Right turn left
+            //Right Sample Turn
             case 8:
-                if(wait(3.10d) > time){
-                    engine.SetSpeed(0.4d, -0.4d);
-                }
-                else{
-                    stopMotors();
-                    next(11);
-                }
-                break;
-            //Center turn left
-            case 9:
-                if(wait(2.2d) > time){
-                    engine.SetSpeed(0.4d, -0.4d);
-                }
-                else{
-                    stopMotors();
-                    next(12);
-                }
-                break;
-            //Left move forward into mecanum
-            case 10:
-                if(wait(2.6d) > time){
-                    engine.SetSpeed(-0.5d, -0.5d);
-                }
-                else{
-                    stopMotors();
-                    next(-10);
-                }
-                break;
-            //Right move forward into mecanum
-            case 11:
-                if (wait(2.64d) > time){
-                    engine.SetSpeed(-1.0d, -1.0d);
-                }
-                else{
-                    stopMotors();
-                    next(-10);
-                }
-                break;
-            //Center move forward into mecanum
-            case 12:
-                if(wait(2.9d) > time){
-                    engine.SetSpeed(-0.5d, -0.5d);
-                }
-                else{
-                    stopMotors();
-                    next(-10);
-                }
-                break;
-            //adds turn for left sample turn
-            case -10:
-                if(wait(1.2d) > time){
+                if(wait(1.9) > time){
                     engine.SetSpeed(0.3d, -0.3d);
                 }
                 else{
                     stopMotors();
-                    if(sample.equals("Left")){
-                        next(13);
-                    }
-                    else if (sample.equals("Right")){
-                        next(14);
-                    }
-                    else {
-                        next(15);
-                    }
+                    next(4);
                 }
                 break;
-            //Left Mecanum
-            case 13:
-                if(wait(4.2d) > time){
-                    engine.Move(SampleOp_States.Dpad.Right, 0.3d);
-                }
-                else{
-                    stopMotors();
-                    next(16);
-                }
-                break;
-            //Right mecanum
-            case 14:
-                if(wait(4.2d) > time){
-                    engine.Move(SampleOp_States.Dpad.Right, 1.0d);
-                }
-                else{
-                    stopMotors();
-                    next(17);
-                }
-                break;
-            //Center Mecanum to wall
-            case 15:
-                if(wait(4.2d) > time){
-                    engine.Move(SampleOp_States.Dpad.Right, 0.3d);
-                }
-                else{
-                    stopMotors();
-                    next(18);
-                }
-                break;
-            //Left move into depot
-            case 16:
-                if(wait(2.5d) > time){
-                    engine.SetSpeed(-0.7d, -0.7d);
-                }
-                else{
-                    stopMotors();
-                    next(19);
-                }
-                break;
-            //Right move into depot
-            case 17:
-                if(wait( 2.7d) > time){
-                    engine.SetSpeed(-0.7d, -0.7d);
-                }
-                else{
-                    stopMotors();
-                    next(20);
-                }
-                break;
-            //Center move into depot
-            case 18:
-                if(wait(2.7d) > time){
-                    engine.SetSpeed(-0.7d, -0.7d);
-                }
-                else{
-                    stopMotors();
-                    next(21);
-                }
-                break;
-            //Arm drop Left
-            case 19:
+                //arm drops  marker
+            case 9:
                 if(army.arm.getMode() != DcMotor.RunMode.RUN_USING_ENCODER){
                     army.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 }
@@ -418,103 +321,128 @@ public class Auto_Crater_Vuforia3 extends OpMode
                     army.lift.setPower(0.0d);
                     next(-11);
                 }
-                break;
+               break;
+
             case -11:
                 if(wait(3.0d) > time){
                     army.arm.setTargetPosition(500);
                     army.arm.setPower(0.53d);
-                    //    rev.carriage.setPower(-0.8d);
+                //    rev.carriage.setPower(-0.8d);
                 }
                 else{
                     stopMotors();
                     army.lift.setPower(0.0d);
-                    //rev.carriage.setPower(0.0d);
-                    next(22);
+                    rev.carriage.setPower(0.0d);
+                    next(-14);
                 }
                 break;
-            //Arm drop Right
-            case 20:
-                if(army.arm.getMode() != DcMotor.RunMode.RUN_USING_ENCODER){
-                    army.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                }
-
-                if (wait(1.57d) > time){
-                    army.arm.setPower(0.8d);
-                    army.lift.setPower(-1.0d);
-
+            case -14:
+                if(wait(1.0d) > time){
+                    engine.SetSpeed(0.5d, 0.5d);
                 }
                 else{
                     stopMotors();
-                    army.lift.setPower(0.0d);
                     next(-12);
                 }
                 break;
             case -12:
-                if(wait(3.0d) > time){
-                    army.arm.setTargetPosition(500);
-                    army.arm.setPower(0.53d);
-                    //    rev.carriage.setPower(-0.8d);
+                if (wait(1.5) > time){
+                    army.arm.setPower(-0.4);
                 }
                 else{
                     stopMotors();
                     army.lift.setPower(0.0d);
-                    //rev.carriage.setPower(0.0d);
-                    next(23);
+                    rev.carriage.setPower(0.0d);
+                    next(10);
                 }
                 break;
-            //Arm Drop Center
-            case 21:
-                if(army.arm.getMode() != DcMotor.RunMode.RUN_USING_ENCODER){
-                    army.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                }
 
-                if (wait(1.57d) > time){
-                    army.arm.setPower(0.8d);
-                    army.lift.setPower(-1.0d);
+            //Checks sample again to run the specified park program
+            case 10:
+                if(sample.equals("Left")){
+                    next(11);
+                }
+                else if (sample.equals("Right")){
+                    next(12);
+                  //  next(100);
+                }
+                else {
+                    next(13);
+                    //next(100);
+                }
+                break;
+            //Left turn
+            case 11:
+                if(wait(2.4d) > time){
+                    engine.SetSpeed(0.6d, -0.6d);
 
                 }
                 else{
                     stopMotors();
-                    army.lift.setPower(0.0d);
-                    next(-13);
+                    next(14);
                 }
                 break;
-            case -13:
-                if(wait(3.0d) > time){
-                    army.arm.setTargetPosition(500);
-                    army.arm.setPower(0.53d);
-                    //    rev.carriage.setPower(-0.8d);
+            //Right Turn
+            case 12:
+                if(wait(2.83d) > time){
+                    engine.SetSpeed(0.3d, -0.3d);
                 }
                 else{
                     stopMotors();
-                    army.lift.setPower(0.0d);
-                    //rev.carriage.setPower(0.0d);
-                    next(24);
+                    next(15);
                 }
                 break;
-            //Left backwards move
-            case 22:
-                if(wait(3.2d) > time){
-                    engine.SetSpeed(0.7d, 0.7d);
+            //Center turn
+            case 13:
+                if(wait(3.18) > time){
+                    engine.SetSpeed(0.3d, -0.3d);
                 }
                 else{
                     stopMotors();
-                    next(25);
+                    next(16);
                 }
                 break;
-            case 23:
-                if(wait(3.2d) > time){
-                    engine.SetSpeed(0.7d, 0.7d);
+            //Left Move forward
+            case 14:
+                if(wait(4.0d) > time){
+                    engine.SetSpeed(-0.3d, -0.3d);
                 }
                 else{
                     stopMotors();
-                    next(25);
+                    next(17);
                 }
                 break;
-            //Center backwards move
-            case 24:
-                if(wait(3.2d) > time){
-                    engine.SetSpeed(0.7d, 0.7d);
+            //Right Move forward
+            case 15:
+                if(wait(2.0d) > time){
+                    engine.SetSpeed(-0.3d, -0.3d);
+                }
+                else{
+                    stopMotors();
+                    next(17);
+                }
+                break;
+            case 16:
+                if(wait(2.8) > time){
+                    engine.SetSpeed(-0.5d, -0.5d);
+                }
+                else{
+                    stopMotors();
+                    next(17);
+                }
+                break;
+            case 17:
+                if(wait(2.0d) > time){
+                    engine.Move(SampleOp_States.Dpad.Right, 1.0d);
+                }
+                else{
+                    stopMotors();
+                    next(20);
+                }
+                break;
+            case 20:
+                if(wait(2.8d) > time){
+                    engine.SetSpeed(-1.0d, -1.0d);
                 }
                 else{
                     stopMotors();
@@ -522,23 +450,43 @@ public class Auto_Crater_Vuforia3 extends OpMode
                 }
                 break;
             case 25:
+              /*  if(army.arm.getMode() != DcMotor.RunMode.RUN_USING_ENCODER){
+                    army.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                }
+
+                if (wait(1.7d) > time){
+                    army.arm.setPower(0.8d);
+                  //  army.lift.setPower(1.0d);
+                }
+                else{
+                    stopMotors();
+                   // army.lift.setPower(0.0d);
+                    next(100);
+                }*/
+              next(26);
+                break;
+            case 26:
                 if(army.arm.getMode() != DcMotor.RunMode.RUN_USING_ENCODER){
                     army.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 }
 
                 if (wait(1.4d) > time){
-                    army.arm.setPower(0.8d);
-                   // army.lift.setPower(0.8d);
+                    army.arm.setPower(-0.6d);
+                    //  army.lift.setPower(1.0d);
                 }
                 else{
                     stopMotors();
-                    army.lift.setPower(0.0d);
+                     army.lift.setPower(0.0d);
                     next(100);
                 }
                 break;
             default:
+                stopMotors();
+                army.lift.setPower(0.0d);
                 break;
         }
+
+
 
         //IMU calibration with lander at 0 0
         //if vuforia == left, use imu to turn 20 degrees left. drive forward. Turn 20 degrees right. Drive forward
@@ -551,6 +499,10 @@ public class Auto_Crater_Vuforia3 extends OpMode
         telemetry.addData("Sample: ", sample);
         telemetry.addData("Arm: " , army.arm.getCurrentPosition());
         telemetry.addData("Stage: ", stage);
+        telemetry.addData("Gyro X: ", gyroOrientation.axis.x);
+        telemetry.addData("Gyro Y: ", gyroOrientation.axis.y);
+        telemetry.addData("Gyro Z: ", gyroOrientation.axis.z);
+        telemetry.addData("Gyro Heading: ", gyroOrientation.heading);
 
     }
 
@@ -561,6 +513,7 @@ public class Auto_Crater_Vuforia3 extends OpMode
     public void stop() {
         engine.Stop();
         engine.SetMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        gyro.stop();
     }
 
     private void stopMotors() {

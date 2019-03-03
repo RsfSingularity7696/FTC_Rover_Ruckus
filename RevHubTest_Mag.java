@@ -34,10 +34,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Modules.ArmModule;
 import org.firstinspires.ftc.teamcode.Modules.EngineModule;
-import org.firstinspires.ftc.teamcode.Modules.TensorFlowModule;
 
-@TeleOp(name="RevHub_18_19", group="Pushbot")
-public class RevHubTest_18_19 extends OpMode {
+@TeleOp(name="RevHubTest_Mag", group="Pushbot")
+public class RevHubTest_Mag extends OpMode {
     private EngineModule engine = new EngineModule();
     private ArmModule army = new ArmModule();
     DigitalTouch touch = new DigitalTouch();
@@ -112,9 +111,6 @@ public class RevHubTest_18_19 extends OpMode {
     @Override
     public void start() {
         engine.SetMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-
     }
 
     /*
@@ -122,95 +118,15 @@ public class RevHubTest_18_19 extends OpMode {
      */
     @Override
     public void loop() {
-         army.loop(this);
-      // boolean isPressed = touch.loop();
+        boolean isPressed = touch.loop();
 
-
-//        if (isPressed) {
-      //      army.arm.setPower(0.0d);
-       // }
-  //      else {
-        //    army.arm.setPower(0.15d);
-    //    }
+        army.loop(this, isPressed);
 
         //Drive engines
         double left = clamp(gamepad1.left_stick_y);
         double right = clamp(gamepad1.right_stick_y);
 
-        if (gamepad1.left_bumper) {
-            if (army.arm.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-                army.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            //army.lift.setTargetPosition(4893);
-            army.arm.setTargetPosition(1780);
-        }
-        if (gamepad1.a || gamepad2.left_trigger > 0.1d) {
-            if (army.arm.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-                army.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            if (army.arm.getCurrentPosition() >= 875) {
-                army.arm.setPower(-0.20);
-            } else {
-                army.arm.setPower(0.499d);
-            }
-
-            army.lift.setPower(1.0d);
-            army.lift.setTargetPosition(4893);
-            army.arm.setTargetPosition(2100);
-        }
-     /*   if (gamepad1.a || gamepad2.left_trigger > 0.1d) {
-            if (army.arm.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-                army.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
-            if (!isPressed) {
-                army.arm.setPower(0.15d);
-            } else {
-                army.arm.setPower(0.0d);
-            }
-
-
-        }*/ else if (gamepad1.b) {
-            if (army.arm.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-                army.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            //if (army.lift.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-            //    army.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            //}
-
-            //army.lift.setTargetPosition(50);
-            //army.lift.setPower(-1.0d);
-            army.arm.setTargetPosition(0);
-            army.arm.setPower(-0.4d);
-        } else if (gamepad1.y) {
-            if (army.arm.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-                army.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
-            army.arm.setTargetPosition(1279);
-            army.arm.setPower(0.35d);
-            //if(army.arm.getCurrentPosition() > 1279){
-            //    army.arm.setPower(-0.3d);
-            //}
-            //else if(army.arm.getCurrentPosition() < 1279){
-            //    army.arm.setPower(0.35d);
-            //}
-
-        }
-
-        if (gamepad1.right_trigger >= 0.3d) {
-            army.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            army.arm.setPower(-gamepad1.right_trigger);
-        } else if (gamepad1.left_trigger >= 0.3d) {
-            army.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            army.arm.setPower(gamepad1.left_trigger);
-        } else {
-            army.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            //army.arm.setPower(0.5d);
-            //army.arm.setTargetPosition(army.arm.getCurrentPosition());
-        }
-
-        if (gamepad2.y) {
+        /*if (gamepad2.y) {
             if (army.lift.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
                 army.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
@@ -231,12 +147,10 @@ public class RevHubTest_18_19 extends OpMode {
         }
 
         if (gamepad1.left_bumper) {
-            // engine.SetMaxMotorPower(1.0d);
             army.lift.setPower(0.4d);
         } else if (gamepad1.right_bumper) {
-            // engine.SetMaxMotorPower(0.50d);
             army.lift.setPower(-0.4d);
-        }
+        }*/
 
         if (!gamepad1.dpad_down && !gamepad1.dpad_left && !gamepad1.dpad_right && !gamepad1.dpad_up) {
             engine.SetSpeed(left, left, right, right);
@@ -244,25 +158,15 @@ public class RevHubTest_18_19 extends OpMode {
             engine.Move(GetInputs(gamepad1), 1.0d);
         }
 
-        if (gamepad1.x) {
-            army.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        }
         //other motors
-
         if (gamepad2.b) {
             out = true;
             collect = false;
-            // power = true;
-            //  collector.setPower(0.75d);
         } else if (gamepad2.a) {
             collect = true;
             out = false;
-
-            // collector.setPower(-1.0d);
-        } else {
-            //  collector.setPower(0.0d);
-            //    power = false;
         }
+
         if (gamepad2.left_bumper) {
             if (!dumpRight && wait(rightDumpWait, dumpWait)) {
                 rightDump.setPosition(1.0d);
@@ -273,7 +177,6 @@ public class RevHubTest_18_19 extends OpMode {
                 dumpRight = false;
                 rightDumpWait = time;
             }
-
         } else if (gamepad2.right_bumper) {
             if (!dumpLeft && wait(leftDumpWait, dumpWait)) {
                 leftDump.setPosition(1.0d);
@@ -286,15 +189,10 @@ public class RevHubTest_18_19 extends OpMode {
             }
         }
 
-        if (gamepad2.right_trigger >= 0.1d) {
-            army.arm.setTargetPosition(610);
-        }
-
         if (collect) {
             collector.setPower(-1.0d);
         } else if (out) {
             collector.setPower(-0.6d);
-            // collector.setPower(0.42d);
         }
 
         if (gamepad2.dpad_down) {
@@ -315,24 +213,13 @@ public class RevHubTest_18_19 extends OpMode {
             collect = false;
         }
 
-        if (gamepad1.a && !pressed) {
-            pressed = true;
-        }
-
         telemetry.addData("Time: ", time);
-
-       // telemetry.addData("Digital Touch: ", isPressed);
+        telemetry.addData("IsPressed: ", isPressed);
         telemetry.addData("Arm: ", army.arm.getCurrentPosition());
         telemetry.addData("Arm Mode: ", army.arm.getMode());
         telemetry.addData("Arm Power: ", army.arm.getPower());
-//        telemetry.addData("LeftB: ", engine.GetMotor(EngineModule.EngineMotor.BackLeft).getCurrentPosition());
-//        telemetry.addData("LeftF: ", engine.GetMotor(EngineModule.EngineMotor.FrontLeft).getCurrentPosition());
-//        telemetry.addData("RightB: ", engine.GetMotor(EngineModule.EngineMotor.BackRight).getCurrentPosition());
-//        telemetry.addData("RightF: ", engine.GetMotor(EngineModule.EngineMotor.FrontRight).getCurrentPosition());
-
         telemetry.addData("Left Wait: ", leftDumpWait);
         telemetry.addData("Right Wait: ", rightDumpWait);
-
         telemetry.update();
     }
 

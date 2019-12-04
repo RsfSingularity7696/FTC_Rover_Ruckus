@@ -33,9 +33,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Modules.ArmModule;
-import org.firstinspires.ftc.teamcode.Modules.EngineModule;
-import org.firstinspires.ftc.teamcode.Modules.TensorFlowModule;
+//import org.firstinspires.ftc.teamcode.Modules.ArmModule;
+//import org.firstinspires.ftc.teamcode.Modules.EngineModule;
+//import org.firstinspires.ftc.teamcode.Modules.TensorFlowModule;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -55,26 +55,24 @@ import org.firstinspires.ftc.teamcode.Modules.TensorFlowModule;
 
 public class Vuforia_Tester extends OpMode
 {
-    ArmModule army = new ArmModule();
-    EngineModule engine = new EngineModule();
 
     int stage = 0;
 
     private String sample = "";
     private double timestamp = 0.0d;
-    private TensorFlowModule detector = new TensorFlowModule();
+   // private TensorFlowModule detector = new TensorFlowModule();
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
-        detector.init(this);
+
 
         telemetry.addData("Status", "Initialized");
 
-        army.init(hardwareMap);
-        engine.Initialize(hardwareMap);
+       // army.init(hardwareMap);
+       /// engine.Initialize(hardwareMap);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -86,7 +84,7 @@ public class Vuforia_Tester extends OpMode
     @Override
     public void init_loop() {
        //army.arm.setPower(-0.8d);
-        army.lift.setPower(0.0d);
+       /// army.lift.setPower(0.0d);
     }
 
     /*
@@ -94,10 +92,10 @@ public class Vuforia_Tester extends OpMode
      */
     @Override
     public void start() {
-        engine.SetMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      //  engine.SetMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        army.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        detector.start();
+       // army.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+       // detector.start();
 
         stage = 0;
         timestamp = time;
@@ -110,7 +108,7 @@ public class Vuforia_Tester extends OpMode
     @Override
     public void loop() {
         if (sample == "") {
-            sample = detector.loop(this);
+           // sample = detector.loop(this);
         }
 
         telemetry.addData("Sample", sample);
@@ -122,13 +120,13 @@ public class Vuforia_Tester extends OpMode
      */
     @Override
     public void stop() {
-        engine.Stop();
-        engine.SetMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      //  engine.Stop();
+      //  engine.SetMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     private void stopMotors() {
-        army.arm.setPower(0.0d);
-        engine.SetSpeed(0.0d);
+    //    army.arm.setPower(0.0d);
+    //    engine.SetSpeed(0.0d);
     }
     public void next() {
         next(stage + 1);
